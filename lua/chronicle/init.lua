@@ -16,7 +16,7 @@ function M.create_floating_window()
   local win = result.win
 
   -- Check if buf was created successfully
-  if buf == nil or type(buf) ~= "number" then
+  if not buf or type(buf) ~= "number" then
     vim.api.nvim_err_writeln("Failed to create buffer")
     return
   end
@@ -25,10 +25,14 @@ function M.create_floating_window()
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
 
   -- Gather content dynamically
+  local buffer_lines = {
+    "=== Buffers ==="
+  }
+  
   local buffers = vim.fn.getbufinfo({buflisted = 1})
-  local buffer_lines = {"=== Buffers ==="}
   for _, buffer in ipairs(buffers) do
-    table.insert(buffer_lines, string.format("Buffer %d: %s", buffer.bufnr, buffer.name ~= "" and buffer.name or "[No Name]"))
+    local buffer_name = buffer.name ~= "" and buffer.name or "[No Name]"
+    table.insert(buffer_lines, string.format("Buffer %d: %s", buffer.bufnr, buffer_name))
   end
 
   table.insert(buffer_lines, "")
@@ -57,7 +61,7 @@ function M.create_floating_window()
   -- Populate the buffer with the collected information
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, buffer_lines)
 
-  -- Set the buffer to be modifiable (if needed for further updates)
+  -- Set the buffer to be non-modifiable
   vim.api.nvim_buf_set_option(buf, 'modifiable', false)
 
   -- Return the window handle for further customization if needed
