@@ -30,16 +30,16 @@ function M.create_tabbed_window()
     style = 'minimal',
     border = { "┌", "─", "┐", "│", "┘", "─", "└", "│" },
     winblend = 10,
-    winhighlight = "Normal:TelescopeNormal,FloatBorder:TelescopeBorder",
+    winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
   })
 
   -- Add tab headers at the top of the buffer
   local tab_header = ""
   for i, tab_name in ipairs(tabs) do
     if i == active_tab then
-      tab_header = tab_header .. string.format("%%#TelescopePromptPrefix# [%s] ", tab_name)
+      tab_header = tab_header .. string.format(" [ %s ] ", tab_name)
     else
-      tab_header = tab_header .. string.format("[%s] ", tab_name)
+      tab_header = tab_header .. string.format(" %s ", tab_name)
     end
   end
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { tab_header })
@@ -63,9 +63,9 @@ function M.populate_content(tab_index)
   local tab_header = ""
   for i, tab_name in ipairs(tabs) do
     if i == active_tab then
-      tab_header = tab_header .. string.format("%%#TelescopePromptPrefix# [%s] ", tab_name)
+      tab_header = tab_header .. string.format(" [ %s ] ", tab_name)
     else
-      tab_header = tab_header .. string.format("[%s] ", tab_name)
+      tab_header = tab_header .. string.format(" %s ", tab_name)
     end
   end
   table.insert(buffer_lines, tab_header)
