@@ -24,17 +24,18 @@ function M.create_floating_window()
   -- Set key mapping for closing the window
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
 
-  -- Gather content dynamically
-  local buffer_lines = {
-    "=== Buffers ==="
-  }
-  
+  -- Initialize buffer content with only the intended lines
+  local buffer_lines = {}
+
+  -- Populate the buffer with information about buffers
+  table.insert(buffer_lines, "=== Buffers ===")
   local buffers = vim.fn.getbufinfo({buflisted = 1})
   for _, buffer in ipairs(buffers) do
     local buffer_name = buffer.name ~= "" and buffer.name or "[No Name]"
     table.insert(buffer_lines, string.format("Buffer %d: %s", buffer.bufnr, buffer_name))
   end
 
+  -- Add a separator and register content
   table.insert(buffer_lines, "")
   table.insert(buffer_lines, "=== Registers ===")
   for i = 0, 9 do
@@ -44,6 +45,7 @@ function M.create_floating_window()
     end
   end
 
+  -- Add a separator and jump list content
   table.insert(buffer_lines, "")
   table.insert(buffer_lines, "=== Jump List ===")
   local jumps = vim.fn.split(vim.fn.execute("jumps"), "\n")
@@ -51,6 +53,7 @@ function M.create_floating_window()
     table.insert(buffer_lines, jumps[i])
   end
 
+  -- Add a separator and change list content
   table.insert(buffer_lines, "")
   table.insert(buffer_lines, "=== Change List ===")
   local changes = vim.fn.split(vim.fn.execute("changes"), "\n")
