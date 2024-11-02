@@ -14,6 +14,11 @@ function buffers.get_buffers()
 end
 
 function buffers.render(win_id)
+    if not vim.api.nvim_win_is_valid(win_id) then
+        vim.api.nvim_err_writeln("Invalid window ID: " .. win_id)
+        return
+    end
+
     local buf_list = buffers.get_buffers()
     local buf = vim.api.nvim_win_get_buf(win_id)
     local lines = {}
