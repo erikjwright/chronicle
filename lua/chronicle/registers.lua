@@ -1,6 +1,6 @@
 local registers = {}
 
-registers.get_registers = function()
+function registers.get_registers()
     local reg_list = {}
     for _, reg in ipairs({ '"', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', ':', '.', '/', '*', '+' }) do
         local content = vim.fn.getreg(reg)
@@ -14,7 +14,7 @@ registers.get_registers = function()
     return reg_list
 end
 
-registers.render = function(win_id)
+function registers.render(win_id)
     local reg_list = registers.get_registers()
     local buf = vim.api.nvim_win_get_buf(win_id)
     local lines = {}
@@ -27,3 +27,4 @@ registers.render = function(win_id)
 end
 
 return registers
+

@@ -1,6 +1,6 @@
 local jumps = {}
 
-jumps.get_jumps = function()
+function jumps.get_jumps()
     local jump_list = vim.fn.getjumplist()[1]
     local result = {}
 
@@ -14,7 +14,7 @@ jumps.get_jumps = function()
     return result
 end
 
-jumps.render = function(win_id)
+function jumps.render(win_id)
     local jump_list = jumps.get_jumps()
     local buf = vim.api.nvim_win_get_buf(win_id)
     local lines = {}
@@ -27,4 +27,3 @@ jumps.render = function(win_id)
 end
 
 return jumps
-

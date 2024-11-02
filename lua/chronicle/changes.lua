@@ -1,6 +1,6 @@
 local changes = {}
 
-changes.get_changes = function()
+function changes.get_changes()
     local change_list = vim.fn.changes()
     local result = {}
 
@@ -14,7 +14,7 @@ changes.get_changes = function()
     return result
 end
 
-changes.render = function(win_id)
+function changes.render(win_id)
     local change_list = changes.get_changes()
     local buf = vim.api.nvim_win_get_buf(win_id)
     local lines = {}
@@ -27,3 +27,4 @@ changes.render = function(win_id)
 end
 
 return changes
+
