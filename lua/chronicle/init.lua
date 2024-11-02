@@ -24,15 +24,21 @@ function M.create_floating_window()
   -- Set key mapping for closing the window
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
 
-  -- Initialize buffer content with only the intended lines
+  -- Initialize buffer content
   local buffer_lines = {}
+
+  -- Helper function to sanitize lines
+  local function sanitize_line(line)
+    return line:gsub("[^%w%s%p]", "")  -- Removes non-alphanumeric, non-space, non-punctuation characters
+  end
 
   -- Populate the buffer with information about buffers
   table.insert(buffer_lines, "=== Buffers ===")
   local buffers = vim.fn.getbufinfo({buflisted = 1})
   for _, buffer in ipairs(buffers) do
     local buffer_name = buffer.name ~= "" and buffer.name or "[No Name]"
-    table.insert(buffer_lines, string.format("Buffer %d: %s", buffer.bufnr, buffer_name))
+    local line = string.format("Buffer %d: %s", buffer.bufnr, buffer_name)
+    table.insert(buffer_lines, sanitize_line(line))
   end
 
   -- Add a separator and register content
@@ -41,7 +47,8 @@ function M.create_floating_window()
   for i = 0, 9 do
     local reg_content = vim.fn.getreg(tostring(i))
     if reg_content ~= "" then
-      table.insert(buffer_lines, string.format("Register %d: %s", i, reg_content))
+      local line = string.format("Register %d: %s", i, reg_content)
+      table.insert(buffer_lines, sanitize_line(line))
     end
   end
 
@@ -50,7 +57,8 @@ function M.create_floating_window()
   table.insert(buffer_lines, "=== Jump List ===")
   local jumps = vim.fn.split(vim.fn.execute("jumps"), "\n")
   for i = 2, #jumps do
-    table.insert(buffer_lines, jumps[i])
+    local line = jumps[i]
+    table.insert(buffer_lines, sanitize_line(line))
   end
 
   -- Add a separator and change list content
@@ -58,7 +66,8 @@ function M.create_floating_window()
   table.insert(buffer_lines, "=== Change List ===")
   local changes = vim.fn.split(vim.fn.execute("changes"), "\n")
   for i = 2, #changes do
-    table.insert(buffer_lines, changes[i])
+    local line = changes[i]
+    table.insert(buffer_lines, sanitize_line(line))
   end
 
   -- Populate the buffer with the collected information
