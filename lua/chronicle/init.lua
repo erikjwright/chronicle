@@ -15,6 +15,12 @@ function M.create_floating_window()
   local buf = result.buf
   local win = result.win
 
+  -- Check if buf was created successfully
+  if buf == nil or type(buf) ~= "number" then
+    vim.api.nvim_err_writeln("Failed to create buffer")
+    return
+  end
+
   -- Set key mapping for closing the window
   vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
 

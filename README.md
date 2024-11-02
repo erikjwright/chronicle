@@ -11,7 +11,6 @@ A Neovim plugin that creates a floating window displaying buffers, registers, ju
 - Interactive floating window with border and transparency.
 
 ## Installation
-Use your favorite plugin manager:
 
 ### Lazy.nvim
 ```lua
