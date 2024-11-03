@@ -1,11 +1,9 @@
 local M = {}
 
--- Define tabs and active_tab at the module level so they are accessible by all functions
 local tabs = { "Buffers", "Registers", "Jumps", "Changes" }
 local active_tab = 1
 local buf
 
--- Function to create and display a floating window with tabs
 function M.create_tabbed_window()
   buf = vim.api.nvim_create_buf(false, true)
 
@@ -33,7 +31,6 @@ function M.create_tabbed_window()
     winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
   })
 
-  -- Add tab headers at the top of the buffer
   local tab_header = ""
   for i, tab_name in ipairs(tabs) do
     if i == active_tab then
@@ -44,10 +41,8 @@ function M.create_tabbed_window()
   end
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { tab_header })
 
-  -- Populate initial content for the first tab
   M.populate_content(active_tab)
 
-  -- Key mappings for switching tabs
   vim.api.nvim_buf_set_keymap(buf, 'n', 'h', ':lua require("chronicle").switch_tab(-1)<CR>', { noremap = true, silent = true })
   vim.api.nvim_buf_set_keymap(buf, 'n', 'l', ':lua require("chronicle").switch_tab(1)<CR>', { noremap = true, silent = true })
 
@@ -55,11 +50,9 @@ function M.create_tabbed_window()
   return win
 end
 
--- Function to populate content based on the active tab
 function M.populate_content(tab_index)
   local buffer_lines = {}
 
-  -- Add tab header
   local tab_header = ""
   for i, tab_name in ipairs(tabs) do
     if i == active_tab then
@@ -69,9 +62,8 @@ function M.populate_content(tab_index)
     end
   end
   table.insert(buffer_lines, tab_header)
-  table.insert(buffer_lines, "")  -- Add an empty line for separation
+  table.insert(buffer_lines, "")
 
-  -- Populate content based on the selected tab
   if tab_index == 1 then
     table.insert(buffer_lines, "=== Buffers ===")
     local buffers = vim.fn.getbufinfo({buflisted = 1})
@@ -104,7 +96,6 @@ function M.populate_content(tab_index)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, buffer_lines)
 end
 
--- Function to switch tabs, called by the key mapping
 function M.switch_tab(direction)
   active_tab = active_tab + direction
   if active_tab < 1 then
@@ -115,7 +106,7 @@ function M.switch_tab(direction)
   M.populate_content(active_tab)
 end
 
-vim.api.nvim_create_user_command('OpenFloatInfo', function()
+vim.api.nvim_create_user_command('ChronicleInfo', function()
   M.create_tabbed_window()
 end, {})
 
