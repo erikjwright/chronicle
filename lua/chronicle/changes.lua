@@ -1,30 +1,15 @@
+-- ./lua/chronicle/changes.lua
 local changes = {}
 
-function changes.get_changes()
-    local change_list = vim.fn.changes()
-    local result = {}
+function changes.render(buf)
+    local change_list = vim.fn.split(vim.fn.execute("changes"), "\n")
+    local lines = { "=== Change List ===" }
 
-    for _, change in ipairs(change_list) do
-        table.insert(result, {
-            lnum = change.lnum,
-            col = change.col,
-            text = vim.api.nvim_buf_get_lines(change.bufnr, change.lnum - 1, change.lnum, false)[1]
-        })
-    end
-    return result
-end
-
-function changes.render(win_id)
-    local change_list = changes.get_changes()
-    local buf = vim.api.nvim_win_get_buf(win_id)
-    local lines = {}
-
-    for _, change in ipairs(change_list) do
-        table.insert(lines, string.format("Change at [%d:%d]: %s", change.lnum, change.col, change.text))
+    for i = 2, #change_list do
+        table.insert(lines, change_list[i])
     end
 
     vim.api.nvim_buf_set_lines(buf, 2, -1, false, lines)
 end
 
 return changes
-
